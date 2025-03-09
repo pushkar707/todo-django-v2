@@ -54,14 +54,11 @@ class LoginSerializer(AuthSerializer, serializers.Serializer):
 class RefreshSerializer(serializers.Serializer):
     refresh_token = serializers.CharField()
 
-    def validate_refresh_token(self, token):
-        is_decoded, data = decode_jwt(token)
-        if not is_decoded:
-            raise serializers.ValidationError(f'{data}. Please login again')
-        return data  # data is user_id
-
     def to_representation(self, instance):
-        user_id = super().to_representation(instance)
-        data = {}
+        data = super().to_representation(instance)
+        token = instance.get('refresh_token')
+        is_decoded, user_id = decode_jwt(token)
+        if not is_decoded:
+            raise serializers.ValidationError(f'{user_id}. Please login again')
         data['access_token'] = create_jwt({'user_id': user_id}, 3600)
         return data
