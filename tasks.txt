@@ -1,0 +1,21 @@
+Built-in django model for users
+enums ways in models without textchoices -/
+relations in SQL - /
+default related_name in models - /
+Joins in django ORM - /
+ModelSerializer -> Serializer
+started_on < completed_on (validations on status value)
+recurring on new task should be created
+Primary keys as uuid(advantage and disadvantage)
+routing in DRF
+Modelviewset -> ApiView
+Architecture of django
+API level validation (pydantic)
+GIL in python, drawbacks of async in python
+
+diff in null and blank
+check migrations and undertand DB layer and application layer
+migration count
+
+Logs models (generated through signals)
+-> if todo contains any non-allowed words -> todo_id, log, 
