@@ -5,7 +5,6 @@ default related_name in models - /
 Joins in django ORM - /
 ModelSerializer -> Serializer -/
 started_on < completed_on (validations on status value) -/
-recurring on new task should be created
 Primary keys as uuid(advantage and disadvantage) -/
 routing in DRF 
 Modelviewset -> ApiView -/
@@ -18,4 +17,17 @@ check migrations and undertand DB layer and application layer
 migration count -/
 
 Logs models (generated through signals)
--> if todo contains any non-allowed words -> todo_id, log, 
+-> if todo contains any non-allowed words -> todo_id, log, -/
+
+---------------------------------------------------------------------------
+select_related and prefetch_related -/
+evaluation of queries .get, first, all, queryset methods
+model level valuation for created_on < completed_on
+reverse migration
+API to create banned words
+API to get logs (group by users, count of total defaults by user)
+API to ban user
+automatically ban user after 15 defaults
+
+
+recurring on new task should be created (cron job)

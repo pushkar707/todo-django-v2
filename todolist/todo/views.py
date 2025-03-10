@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from todo.models import Todo
+from datetime import datetime
 
 
 class TodoApi(APIView):
@@ -20,10 +21,11 @@ class TodoApi(APIView):
     def get(self, request):
         user = request.custom_user
         if user.is_superuser:
-            todos = Todo.objects.prefetch_related('labels').all()
+            todos = Todo.objects.prefetch_related(
+                'labels').filter(created_on__date=datetime.now())
         else:
             todos = Todo.objects.prefetch_related(
-                'labels').filter(user=user.id)
+                'labels').filter(user=user.id, created_on__date=datetime.now())
 
         serializer = TodoSerializer(instance=todos, many=True)
         return Response({'status': True, 'message': 'Todos fetched', 'data': serializer.data})
