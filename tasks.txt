@@ -21,9 +21,9 @@ Logs models (generated through signals)
 
 ---------------------------------------------------------------------------
 select_related and prefetch_related -/
-evaluation of queries .get, first, all, queryset methods
-model level valuation for created_on < completed_on
-reverse migration
+evaluation of queries .get, first, all, queryset methods -/
+model level valuation for created_on < completed_on -/
+reverse migration -/
 API to create banned words
 API to get logs (group by users, count of total defaults by user)
 API to ban user

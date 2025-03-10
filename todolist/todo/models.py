@@ -2,6 +2,8 @@ from django.db import models
 from datetime import datetime
 from django.contrib.postgres.fields import ArrayField
 from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.db.models import CheckConstraint, Q
 
 
 class TodoStatus(models.IntegerChoices):
@@ -28,6 +30,14 @@ class Todo(models.Model):
         settings.AUTH_USER_MODEL, null=False, on_delete=models.CASCADE, related_name='todos')
     is_recurring = models.BooleanField(default=False)
     labels = models.ManyToManyField(Label)
+
+    class Meta:
+        constraints = [
+            CheckConstraint(
+                check=Q(completed_on__gt=models.F('started_on')),
+                name='completed_on_gt_started_on'
+            )
+        ]
 
 
 class BanWords(models.IntegerChoices):
