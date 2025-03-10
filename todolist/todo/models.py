@@ -31,8 +31,8 @@ class Todo(models.Model):
 
 
 class BanWords(models.IntegerChoices):
-    CAT = 1
-    DOG = 2
+    CAT = 1, 'cat'
+    DOG = 2, 'dog'
 
 
 class Log(models.Model):
