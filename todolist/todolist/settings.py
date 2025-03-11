@@ -50,7 +50,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'todo.middleware.AuthMiddleware'
+    # 'todo.middleware.AuthMiddleware'
 ]
 
 ROOT_URLCONF = 'todolist.urls'

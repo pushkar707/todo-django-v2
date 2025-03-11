@@ -59,8 +59,9 @@ class RefreshSerializer(serializers.Serializer):
         token = instance.get('refresh_token')
         if not token:
             raise serializers.ValidationError('Authorization token not found')
-        is_decoded, user_id = decode_jwt(token)
+        is_decoded, user_or_error = decode_jwt(token)
         if not is_decoded:
-            raise serializers.ValidationError(f'{user_id}. Please login again')
-        data['access_token'] = create_jwt({'user_id': user_id}, 3600)
+            raise serializers.ValidationError(
+                f'{user_or_error}. Please login again')
+        data['access_token'] = create_jwt({'user_id': user_or_error.id}, 3600)
         return data
