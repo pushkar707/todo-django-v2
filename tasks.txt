@@ -33,12 +33,12 @@ automatically ban user after 15 defaults -/
 recurring on new task should be created (cron job)
 
 ---------------------------
-full_clean and clean
+full_clean and clean -/
 custom user auth model with roles(admin, user), is_banned -/
 admin panel all tables modify with attributes as seperate columns, filter, search -/
-custom persmission and auth methods 
-register model via decorator
-modify API to get logs
+custom persmission and auth methods -/
+register model via decorator -/
+modify API to get logs -/
 data: [
     {
         user_id: {id},
@@ -50,7 +50,7 @@ data: [
         ]
     }
 ]
-Q object
+Q object -/
 regex in check_todo signal
 Meta class in models
 querysetmanager in models

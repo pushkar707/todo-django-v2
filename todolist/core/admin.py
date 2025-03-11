@@ -3,8 +3,10 @@ from .models import CustomUser
 from django.db.models import Count
 
 
+@admin.register(CustomUser)
 class AdminUser(admin.ModelAdmin):
-    list_display = ['username', 'email', 'is_banned', 'todos_count', 'logs_count']
+    list_display = ['username', 'email',
+                    'is_banned', 'todos_count', 'logs_count']
 
     @admin.display(description='Todos Count')
     def todos_count(self, instance):
@@ -17,7 +19,7 @@ class AdminUser(admin.ModelAdmin):
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
         return queryset.annotate(todos_count=Count('todos'),
-                          logs_count=Count('todos__logs')) 
+                                 logs_count=Count('todos__logs'))
 
 
-admin.site.register(CustomUser, AdminUser)
+# admin.site.register(CustomUser, AdminUser)

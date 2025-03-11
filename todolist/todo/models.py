@@ -1,10 +1,7 @@
 from django.db import models
 from datetime import datetime
-from django.contrib.postgres.fields import ArrayField
 from django.conf import settings
-from django.core.exceptions import ValidationError
 from django.db.models import CheckConstraint, Q
-from django.db.models import Count
 
 
 class TodoStatus(models.IntegerChoices):
