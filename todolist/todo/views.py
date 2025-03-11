@@ -4,17 +4,22 @@ from todo.serializers import TodoSerializer
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework import status, permissions
-from todo.models import Todo
+from todo.models import Todo, TodoStatus
 from datetime import datetime
 from collections import Counter
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.db.models import Q
 from core.models import CustomUser, RoleChoices
-from todo.CustomAuthentication import IsLoggedIn, IsAdminUser
+from todo.CustomAuthentication import IsLoggedIn, IsAdminUser, CanCreateTodo
 
 
 class TodoApi(APIView):
     authentication_classes = [IsLoggedIn]
+
+    def get_authenticators(self):
+        if self.request.method == 'POST':
+            return [CanCreateTodo()]
+        return super().get_authenticators()
 
     def post(self, request):
         data = request.data
@@ -27,12 +32,22 @@ class TodoApi(APIView):
 
     def get(self, request):
         user = request.user
-        if user.is_superuser:
-            todos = Todo.objects.prefetch_related(
-                'labels').filter(created_on__date=datetime.now())
+        day = self.request.GET.get('day')
+        month = self.request.GET.get('month')
+        year = self.request.GET.get('year')
+        date = None
+        if day and month and year:
+            try:
+                date = datetime(int(year), int(month), int(day)).date()
+            except ValueError:
+                date = datetime.now().date()
         else:
-            todos = Todo.objects.prefetch_related(
-                'labels').filter(user=user.id, created_on__date=datetime.now())
+            date = datetime.now().date()
+        query = Q(created_on__date=date) | Q(
+            status=TodoStatus.WORKING) | Q(is_recurring=True)
+        if not user.role == RoleChoices.ADMIN:
+            query &= Q(user=user.id)
+        todos = Todo.objects.prefetch_related('labels').filter(query)
 
         serializer = TodoSerializer(instance=todos, many=True)
         return Response({'status': True, 'message': 'Todos fetched', 'data': serializer.data})
@@ -68,38 +83,32 @@ class GetLogsApi(APIView):
     authentication_classes = [IsAdminUser]
 
     def get(self, request):
-        # users = CustomUser.objects.filter(todos__logs__isnull=False).values('id','todos__logs__word').annotate(count=Count('todos__logs__word'))
         users = CustomUser.objects.filter(todos__logs__isnull=False).values(
             'id').annotate(words=ArrayAgg('todos__logs__word', distinct=False))
 
         logs = []
         for user in users:
-            obj = {'id': user['id'], 'logs': []}
+            obj = {'user_id': user['id'], 'logs': []}
             words_count = Counter(user['words'])
             for word, count in words_count.items():
                 obj['logs'].append({'word': word, 'count': count})
             logs.append(obj)
-        # logs = defaultdict(list)
-        # for user in users:
-        #     obj = {'id': user.id, 'logs': []}
-
-        # for user in users:
-        #     obj = {'user_id': user.id, 'logs': []}
-        #     for todo in user.todos.all():
-        #         logs = todo.logs.values('word').annotate(count=Count('word'))
-        #     obj['logs'] = list(logs)
-
-        # words = user.todos.logs.all().values_list('word', flat=True)
-        # logs[todo.user_id].append(
-        #     {'heading': todo.heading, 'description': todo.description, 'words': words})
         return Response({'status': True, 'message': 'Logs fetched successfully', 'data': logs})
 
 
 class BanUserApi(APIView):
     authentication_classes = [IsAdminUser]
 
-    def delete(self, request, id):
-        user = CustomUser.objects.filter(id=id).update(is_active=False)
+    def patch(self, request, id):
+        user = CustomUser.objects.get(id=id)
+        if user.is_banned:
+            user.is_banned = False
+            message = 'User unbanned successfully'
+        else:
+            user.is_banned = True
+            message = 'User banned successfully'
+        user.save()
+
         if not user:
             return Response({'error': True, 'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
-        return Response({'status': True, 'message': 'User banned successfully'})
+        return Response({'status': True, 'message': message})

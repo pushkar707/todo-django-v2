@@ -51,8 +51,8 @@ data: [
     }
 ]
 Q object -/
-regex in check_todo signal
-Meta class in models
+regex in check_todo signal -/
+Meta class in models -/ 
 querysetmanager in models
 .save() functions order
 due_on > now validation in models

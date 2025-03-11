@@ -27,5 +27,5 @@ def check_todo(sender, instance, created, **kwargs):
                 total_logs=Count('logs'))
             print(logs.get('total_logs'))
             if logs.get('total_logs') >= 15:
-                user.is_active = False
+                user.is_banned = True
                 user.save()

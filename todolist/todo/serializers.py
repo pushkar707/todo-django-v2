@@ -39,7 +39,9 @@ class TodoSerializer(Base):
         user = self.context.get('user')
         labels = validated_data.pop('labels', [])
         validated_data.pop('status', None)
-        todo = Todo.objects.create(**validated_data, user=user)
+        todo = Todo(**validated_data, user=user)
+        todo.full_clean()
+        todo.save()
         if labels:
             todo.labels.set(labels)
         return todo
@@ -62,6 +64,7 @@ class TodoSerializer(Base):
 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
+        instance.full_clean()
         instance.save()
         return instance
 
