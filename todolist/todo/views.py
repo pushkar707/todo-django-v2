@@ -4,12 +4,12 @@ from todo.serializers import TodoSerializer
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework import status, permissions
-from django.contrib.auth.models import User
 from todo.models import Todo
 from datetime import datetime
 from collections import defaultdict
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.db.models import Q
+from core.models import CustomUser, RoleChoices
 
 
 class TodoApi(APIView):
@@ -63,7 +63,7 @@ class GetLogsApi(APIView):
 
     def get(self, request):
         user = request.custom_user
-        if not user.is_staff:
+        if not user.role == RoleChoices.ADMIN:
             return Response({'Only admin access allowed'}, status=status.HTTP_401_UNAUTHORIZED)
 
         todos = Todo.objects.filter(logs__isnull=False).prefetch_related('logs').only(
@@ -84,7 +84,7 @@ class BanUserApi(APIView):
         if not user.is_staff:
             return Response({'Only admin access allowed'}, status=status.HTTP_401_UNAUTHORIZED)
 
-        user = User.objects.filter(id=id).update(is_active=False)
+        user = CustomUser.objects.filter(id=id).update(is_active=False)
         if not user:
             return Response({'error': True, 'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
         return Response({'status': True, 'message': 'User banned successfully'})

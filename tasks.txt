@@ -33,8 +33,8 @@ automatically ban user after 15 defaults -/
 recurring on new task should be created (cron job)
 
 ---------------------------
-full_clean and clean
-custom user auth model with roles(admin, user), is_banned
+full_clean and clean -/
+custom user auth model with roles(admin, user), is_banned 
 admin panel all tables modify with attributes as seperate columns, filter, search
 custom persmission and auth methods 
 modify API to get logs

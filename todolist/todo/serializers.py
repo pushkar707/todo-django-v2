@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from todo.models import TodoStatus, Label, Todo
-from django.contrib.auth.models import User
 from django.utils import timezone
 
 

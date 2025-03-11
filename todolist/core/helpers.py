@@ -1,6 +1,6 @@
 import jwt
 import time
-from django.contrib.auth.models import User
+from core.models import CustomUser
 
 JWT_SECRET_KEY = "ERSDDFXCDFXDFCERF"
 
@@ -22,7 +22,7 @@ def decode_jwt(token):
         return False, 'Token Invalid'
 
     user_id = data.get('user_id')
-    user = User.objects.filter(id=user_id, is_active=True).exists()
+    user = CustomUser.objects.filter(id=user_id, is_active=True).exists()
     if not user:
         return False, 'This account no longer exists'
     return True, user_id

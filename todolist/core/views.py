@@ -2,8 +2,6 @@ from rest_framework.views import APIView
 from core.serializers import RegisterSerializer, LoginSerializer, RefreshSerializer
 from rest_framework.response import Response
 from rest_framework import status
-from todo.models import TodoStatus
-from django.contrib.auth.models import User
 
 
 class RegisterApi(APIView):

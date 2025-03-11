@@ -44,15 +44,3 @@ class Todo(models.Model):
                 name='completed_on_gt_started_on'
             )
         ]
-
-
-# Left Join
-# Todo.objects.select_related('user_id').all()
-# # Inner join
-# Todo.objects.select_related('user_id').filter(user_id__isnull=False)
-# # Right join from todo to user
-# User.objects.select_related('todos').filter()
-# # Full join complex
-
-# # Many to many
-# Todo.objects.prefetch_related('labels').all()

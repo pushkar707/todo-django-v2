@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import login, authenticate
-from django.contrib.auth.models import User
+from core.models import CustomUser
 from core.helpers import create_jwt, decode_jwt
 from django.db.models import Q
 # from django.core.exceptions
@@ -28,13 +28,13 @@ class RegisterSerializer(AuthSerializer, serializers.Serializer):
     last_name = serializers.CharField(required=False)
 
     def validate(self, data):
-        if User.objects.filter(Q(username=data['username']) | Q(email=data['email'])).exists():
+        if CustomUser.objects.filter(Q(username=data['username']) | Q(email=data['email'])).exists():
             raise serializers.ValidationError(
                 "User with given username or email already exists.")
         return data
 
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
+        user = CustomUser.objects.create_user(**validated_data)
         return user
 
 

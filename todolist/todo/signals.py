@@ -2,7 +2,6 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from todo.models import Todo, BanWords
 from django.db.models import Q, Count
-from django.contrib.auth.models import User
 
 
 @receiver(pre_save, sender=BanWords)
