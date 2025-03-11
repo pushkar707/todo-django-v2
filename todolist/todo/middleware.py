@@ -12,6 +12,8 @@ class AuthMiddleware(MiddlewareMixin):
             if not auth_header:
                 return JsonResponse({'error': True, 'message': 'Authoization header not available'}, status=status.HTTP_401_UNAUTHORIZED)
             token = auth_header.split(' ')[1]
+            if not token:
+                return JsonResponse({'error': True, 'message': 'Authorization token not found'}, status=status.HTTP_404_NOT_FOUND)
             is_token_decoded, data = decode_jwt(token)
             if is_token_decoded:
                 request.custom_user = User.objects.get(id=data)

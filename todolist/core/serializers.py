@@ -57,6 +57,8 @@ class RefreshSerializer(serializers.Serializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         token = instance.get('refresh_token')
+        if not token:
+            raise serializers.ValidationError('Authorization token not found')
         is_decoded, user_id = decode_jwt(token)
         if not is_decoded:
             raise serializers.ValidationError(f'{user_id}. Please login again')

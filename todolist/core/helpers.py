@@ -18,9 +18,11 @@ def decode_jwt(token):
         return False, 'Token expired'
     except jwt.InvalidSignatureError:
         return False, 'Token Invalid'
+    except jwt.InvalidTokenError:
+        return False, 'Token Invalid'
 
     user_id = data.get('user_id')
-    user = User.objects.filter(id=user_id).exists()
+    user = User.objects.filter(id=user_id, is_active=True).exists()
     if not user:
-        return
+        return False, 'This account no longer exists'
     return True, user_id

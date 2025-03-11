@@ -21,13 +21,26 @@ Logs models (generated through signals)
 
 ---------------------------------------------------------------------------
 select_related and prefetch_related -/
-evaluation of queries .get, first, all, queryset methods -/
+evaluation of queries .get, first, all, queryset methods -/ objects.filter().filter().exclude().all().first()
 model level valuation for created_on < completed_on -/
 reverse migration -/
-API to create banned words
-API to get logs (group by users, count of total defaults by user)
-API to ban user
-automatically ban user after 15 defaults
+admin to create banned words -/
+API to get logs (group by users, count of total defaults by user) -/
+API to ban user -/
+automatically ban user after 15 defaults -/
 
 
 recurring on new task should be created (cron job)
+
+---------------------------
+full_clean and clean
+custom user auth model with roles(admin, user), is_banned
+admin panel all tables modify with attributes as seperate columns, filter, search
+custom persmission and auth methods 
+modify API to get logs
+Q object
+regex in check_todo signal
+Meta class in models
+querysetmanager in models
+.save() functions order
+due_on > now validation in models

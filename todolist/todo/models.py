@@ -4,6 +4,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db.models import CheckConstraint, Q
+from django.db.models import Count
 
 
 class TodoStatus(models.IntegerChoices):
@@ -14,6 +15,10 @@ class TodoStatus(models.IntegerChoices):
 
 class Label(models.Model):
     label = models.CharField(max_length=20)
+
+
+class BanWords(models.Model):
+    word = models.CharField(null=False, blank=False)
 
 
 class Todo(models.Model):
@@ -30,6 +35,7 @@ class Todo(models.Model):
         settings.AUTH_USER_MODEL, null=False, on_delete=models.CASCADE, related_name='todos')
     is_recurring = models.BooleanField(default=False)
     labels = models.ManyToManyField(Label)
+    logs = models.ManyToManyField(BanWords,  null=False, related_name='todos')
 
     class Meta:
         constraints = [
@@ -39,17 +45,6 @@ class Todo(models.Model):
             )
         ]
 
-
-class BanWords(models.IntegerChoices):
-    CAT = 1, 'cat'
-    DOG = 2, 'dog'
-
-
-class Log(models.Model):
-    words = ArrayField(models.IntegerField(
-        choices=BanWords.choices), null=False)
-    todo = models.ForeignKey(
-        Todo, on_delete=models.CASCADE, related_name='logs', null=False)
 
 # Left Join
 # Todo.objects.select_related('user_id').all()
