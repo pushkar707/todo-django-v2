@@ -1,15 +1,23 @@
 from django.contrib import admin
-from .models import CustomUser, RoleChoices
+from .models import CustomUser
+from django.db.models import Count
 
 
-# class CustomUserAdmin(admin.ModelAdmin):
-#     list_display = ('email', 'first_name', 'last_name', 'role', 'is_banned')
-    
-#     def has_view_permission(self, request, obj=None):
-#         return request.user.is_authenticated and request.user.role == RoleChoices.ADMIN
+class AdminUser(admin.ModelAdmin):
+    list_display = ['username', 'email', 'is_banned', 'todos_count', 'logs_count']
 
-#     def has_module_permission(self, request):
-#         return request.user.is_authenticated and request.user.role == RoleChoices.ADMIN
+    @admin.display(description='Todos Count')
+    def todos_count(self, instance):
+        return instance.todos_count
+
+    @admin.display(description='Logs Count')
+    def logs_count(self, instance):
+        return instance.logs_count
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        return queryset.annotate(todos_count=Count('todos'),
+                          logs_count=Count('todos__logs')) 
 
 
-# admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(CustomUser, AdminUser)
