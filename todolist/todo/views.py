@@ -45,7 +45,7 @@ class TodoApi(APIView):
             date = datetime.now().date()
         query = Q(created_on__date=date) | Q(
             status=TodoStatus.WORKING) | Q(is_recurring=True)
-        if not user.role == RoleChoices.ADMIN:
+        if user.role != RoleChoices.ADMIN:
             query &= Q(user=user.id)
         todos = Todo.objects.prefetch_related('labels').filter(query)
 

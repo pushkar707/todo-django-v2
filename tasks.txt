@@ -52,7 +52,13 @@ data: [
 ]
 Q object -/
 regex in check_todo signal -/
-Meta class in models -/ 
-querysetmanager in models
+Meta class in models -/
+querysetmanager in models -/
 .save() functions order
-due_on > now validation in models
+due_on > now validation in models -/
+
+-------------------------------------
+add persmissions
+multiple user ban in single API with toggle
+How django ORM create join queries
+or without Q

@@ -5,7 +5,7 @@ from django.db.models import Q, Count, Value
 
 
 @receiver(pre_save, sender=BanWords)
-def lowercase_email(sender, instance, **kwargs):
+def lowercase_word(sender, instance, **kwargs):
     if instance.word:
         instance.word = instance.word.lower()
 
