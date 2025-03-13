@@ -1,7 +1,6 @@
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 from core.helpers import decode_jwt
-from core.models import CustomUser, RoleChoices
 
 
 class IsLoggedIn(BasicAuthentication):
@@ -16,30 +15,3 @@ class IsLoggedIn(BasicAuthentication):
         if not is_token_decoded:
             raise AuthenticationFailed(user_or_error)
         return (user_or_error, None)
-
-
-class CanCreateTodo(IsLoggedIn):
-    def authenticate(self, request):
-        result = super().authenticate(request)
-        if result is None:
-            return None
-
-        user, _ = result
-        if user.is_banned:
-            raise AuthenticationFailed(
-                'You are no longer allowed to create a Todo')
-        return (user, None)
-
-
-class IsAdminUser(IsLoggedIn):
-    def authenticate(self, request):
-        result = super().authenticate(request)
-
-        if result is None:
-            return None
-
-        user, _ = result
-        if user.role != RoleChoices.ADMIN:
-            raise AuthenticationFailed(
-                'Only admin is allowed to access this route')
-        return (user, None)

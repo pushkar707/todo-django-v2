@@ -5,5 +5,5 @@ urlpatterns = [
     path('', TodoApi.as_view()),
     path('<int:id>/', SingleTodoApi.as_view()),
     path('logs/', GetLogsApi.as_view()),
-    path('ban/<int:id>', BanUserApi.as_view())
+    path('ban/', BanUserApi.as_view())
 ]

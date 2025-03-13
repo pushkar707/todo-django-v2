@@ -8,18 +8,15 @@ from todo.models import Todo, TodoStatus
 from datetime import datetime
 from collections import Counter
 from django.contrib.postgres.aggregates import ArrayAgg
-from django.db.models import Q
+from django.db.models import Q, F
 from core.models import CustomUser, RoleChoices
-from todo.CustomAuthentication import IsLoggedIn, IsAdminUser, CanCreateTodo
+from todo.CustomAuthentication import IsLoggedIn
+from todo.CustomPermission import IsAdmin, CanCreateTodo
 
 
 class TodoApi(APIView):
     authentication_classes = [IsLoggedIn]
-
-    def get_authenticators(self):
-        if self.request.method == 'POST':
-            return [CanCreateTodo()]
-        return super().get_authenticators()
+    permission_classes = [CanCreateTodo]
 
     def post(self, request):
         data = request.data
@@ -44,7 +41,7 @@ class TodoApi(APIView):
         else:
             date = datetime.now().date()
         query = Q(created_on__date=date) | Q(
-            status=TodoStatus.WORKING) | Q(is_recurring=True)
+            status=TodoStatus.WORKING) | Q(is_recurring=True) | Q(due_on__date__gt=date)
         if user.role != RoleChoices.ADMIN:
             query &= Q(user=user.id)
         todos = Todo.objects.prefetch_related('labels').filter(query)
@@ -80,7 +77,8 @@ class SingleTodoApi(APIView):
 
 
 class GetLogsApi(APIView):
-    authentication_classes = [IsAdminUser]
+    authentication_classes = [IsLoggedIn]
+    permission_classes = [IsAdmin]
 
     def get(self, request):
         users = CustomUser.objects.filter(todos__logs__isnull=False).values(
@@ -97,18 +95,15 @@ class GetLogsApi(APIView):
 
 
 class BanUserApi(APIView):
-    authentication_classes = [IsAdminUser]
+    authentication_classes = [IsLoggedIn]
+    permission_classes = [IsAdmin]
 
-    def patch(self, request, id):
-        user = CustomUser.objects.get(id=id)
-        if user.is_banned:
-            user.is_banned = False
-            message = 'User unbanned successfully'
-        else:
-            user.is_banned = True
-            message = 'User banned successfully'
-        user.save()
+    def patch(self, request):
+        data = request.data
+        ids = data.get('ids')
+        user = CustomUser.objects.filter(
+            id__in=ids).update(is_banned=~F('is_banned'))
 
         if not user:
             return Response({'error': True, 'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
-        return Response({'status': True, 'message': message})
+        return Response({'status': True, 'message': 'Users ban status updates successfully'})

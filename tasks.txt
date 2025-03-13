@@ -58,7 +58,25 @@ querysetmanager in models -/
 due_on > now validation in models -/
 
 -------------------------------------
-add persmissions
-multiple user ban in single API with toggle
+add persmissions -/
+multiple user ban in single API with toggle -/
+
+def generator(start, end):
+    i = start
+    while start < end:
+        yield i
+    i+=1
+
+
+lambda functions, generator and iterator, comprehensions (list, set, dictionery)
 How django ORM create join queries
+TypeError: unhashable type: 'list', hashable objects, custom objects mutable or immutable, change mutable to immutable if mutable
+JSON parse and render in DRF, custom renderers
+settings.py
+advantages and disadvantage of django
 or without Q
+datetime.now() and timezone.now()
+to_python, get_db_prep_value, get_internal_type
+library, packages, modules
+apps.py file
+Add id that don't exists in ban to .json
