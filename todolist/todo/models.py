@@ -36,6 +36,11 @@ class Todo(models.Model):
     logs = models.ManyToManyField(BanWords, related_name='todos')
 
     def clean(self):
+        '''
+        Validate status in both create and update
+        Status validation created -> working -> completed
+        Also checks started_on < completed_on
+        '''
         if not self.pk and self.status != TodoStatus.CREATED:
             raise ValidationError(
                 'Status must be created when creating the todo')
@@ -43,7 +48,9 @@ class Todo(models.Model):
             original = Todo.objects.get(pk=self.pk)
             original_status = original.status
 
-            if original_status == 1 and self.status != 2:
+            if self.status == original_status:
+                pass
+            elif original_status == 1 and self.status != 2:
                 raise ValidationError(
                     'You can only modify status from created to working')
             elif original_status == 2 and self.status != 3:
@@ -59,6 +66,7 @@ class Todo(models.Model):
         super().clean()
 
     class Meta:
+        # DB level constraints for started_on and completed_on
         constraints = [
             CheckConstraint(
                 check=Q(completed_on__gt=models.F('started_on')),

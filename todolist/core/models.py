@@ -4,6 +4,10 @@ from django.utils import timezone
 
 
 class CustomUserManager(BaseUserManager):
+    '''
+    Modifying create_superuser to assign custom field role=ADMIN to superuser
+    '''
+
     def create_user(self, email, password=None, **extra_fields):
         if not email:
             raise ValueError("The Email field must be set")

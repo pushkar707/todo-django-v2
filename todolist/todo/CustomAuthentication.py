@@ -4,6 +4,10 @@ from core.helpers import decode_jwt
 
 
 class IsLoggedIn(BasicAuthentication):
+    '''
+    Checks for access token in Authorzation header and validates the token
+    '''
+
     def authenticate(self, request):
         auth_header = request.headers.get('Authorization')
         if not auth_header:

@@ -8,7 +8,10 @@ from django.db.models import Q
 
 class AuthSerializer(serializers.Serializer):
     def to_representation(self, instance):
-        # return access_token and refresh_toekn in response
+        '''
+        return access_token and refresh_toekn in response from user id. 
+        Inherited by login and register serializers
+        '''
         data = super().to_representation(instance)
         user_id = instance.id
         payload = {'user_id': user_id}
@@ -21,6 +24,9 @@ class AuthSerializer(serializers.Serializer):
 
 
 class RegisterSerializer(AuthSerializer, serializers.Serializer):
+    '''
+    Validates body and create user
+    '''
     username = serializers.CharField(min_length=8, max_length=25)
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True, min_length=8)
@@ -39,6 +45,9 @@ class RegisterSerializer(AuthSerializer, serializers.Serializer):
 
 
 class LoginSerializer(AuthSerializer, serializers.Serializer):
+    '''
+    Check if credentials are correct
+    '''
     username = serializers.CharField(min_length=8, max_length=25)
     password = serializers.CharField(write_only=True, min_length=8)
 
@@ -52,6 +61,9 @@ class LoginSerializer(AuthSerializer, serializers.Serializer):
 
 
 class RefreshSerializer(serializers.Serializer):
+    '''
+    Generate access token from refresh token
+    '''
     refresh_token = serializers.CharField()
 
     def to_representation(self, instance):

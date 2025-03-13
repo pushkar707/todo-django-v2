@@ -4,12 +4,18 @@ from django.utils import timezone
 
 
 class TodoLabelSerailizer(serializers.ModelSerializer):
+    '''
+    Populate todo labels
+    '''
     class Meta:
         model = Label
         fields = ['label']
 
 
 class Base(serializers.Serializer):
+    '''
+    Specifies all the fields, and their properties including read_only, write_only
+    '''
     id = serializers.PrimaryKeyRelatedField(read_only=True)
     user = serializers.PrimaryKeyRelatedField(read_only=True)
     heading = serializers.CharField()
@@ -29,6 +35,11 @@ class Base(serializers.Serializer):
 
 
 class TodoSerializer(Base):
+    '''
+    Validates due_on > current Timestamp
+    Defines logic for create and update todo
+    '''
+
     def validate_due_on(self, due_on):
         if due_on < timezone.now():
             raise serializers.ValidationError(
@@ -36,6 +47,9 @@ class TodoSerializer(Base):
         return due_on
 
     def create(self, validated_data):
+        '''
+        Create todo, and attach it to user, and add its labels
+        '''
         user = self.context.get('user')
         labels = validated_data.pop('labels', [])
         validated_data.pop('status', None)
@@ -47,6 +61,9 @@ class TodoSerializer(Base):
         return todo
 
     def update(self, instance, validated_data):
+        '''
+        Set labels, validate status and modifies rest of the fields
+        '''
         labels = validated_data.pop('labels', [])
         if labels:
             instance.labels.set(labels)
@@ -69,6 +86,9 @@ class TodoSerializer(Base):
         return instance
 
     def to_representation(self, instance):
+        '''
+        Modifies status from interger to its string label
+        '''
         data = super().to_representation(instance)
         data['status'] = TodoStatus(instance.status).label.lower()
         return data

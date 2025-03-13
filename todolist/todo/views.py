@@ -15,6 +15,9 @@ from todo.CustomPermission import IsAdmin, CanCreateTodo
 
 
 class TodoApi(APIView):
+    '''
+    APis to create and get all todos
+    '''
     authentication_classes = [IsLoggedIn]
     permission_classes = [CanCreateTodo]
 
@@ -51,7 +54,11 @@ class TodoApi(APIView):
 
 
 class SingleTodoApi(APIView):
+    '''
+    Update or delete single todo
+    '''
     authentication_classes = [IsLoggedIn]
+    permission_classes = [CanCreateTodo]
 
     def patch(self, request, id):
         user = request.user
@@ -77,6 +84,9 @@ class SingleTodoApi(APIView):
 
 
 class GetLogsApi(APIView):
+    '''
+    Allow admin to get all logs
+    '''
     authentication_classes = [IsLoggedIn]
     permission_classes = [IsAdmin]
 
@@ -95,6 +105,9 @@ class GetLogsApi(APIView):
 
 
 class BanUserApi(APIView):
+    '''
+    Allow admin to toggle ban on multiple users at once
+    '''
     authentication_classes = [IsLoggedIn]
     permission_classes = [IsAdmin]
 

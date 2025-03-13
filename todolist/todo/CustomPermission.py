@@ -4,6 +4,10 @@ from rest_framework.exceptions import PermissionDenied
 
 
 class IsAdmin(BasePermission):
+    '''
+    Added to routes accessible by admin only
+    '''
+
     def has_permission(self, request, view):
         if request.user.role != RoleChoices.ADMIN:
             raise PermissionDenied(
@@ -12,12 +16,15 @@ class IsAdmin(BasePermission):
 
 
 class CanCreateTodo(BasePermission):
+    '''
+    Check if logged-in user has the permission to create todos i.e. they are not banned
+    '''
+
     def has_permission(self, request, view):
-        if request.method != 'POST':
+        if request.method not in ['POST', 'PUT', 'PATCH']:
             return True
         print(request.user)
         if request.user.is_banned:
-            return False
-            # raise PermissionDenied(
-            #     'You are no longer allowed to create a Todo')
+            raise PermissionDenied(
+                'You are no longer allowed to create a Todo')
         return True
