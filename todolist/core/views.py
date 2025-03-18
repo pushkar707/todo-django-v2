@@ -12,7 +12,7 @@ class RegisterApi(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class LoginApi(APIView):
@@ -22,7 +22,7 @@ class LoginApi(APIView):
             data=data, context={'request': self.request})
         if serializer.is_valid():
             return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class RefreshApi(APIView):
@@ -31,4 +31,4 @@ class RefreshApi(APIView):
         serializer = RefreshSerializer(data=data)
         if serializer.is_valid():
             return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
