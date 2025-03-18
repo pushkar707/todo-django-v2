@@ -80,3 +80,14 @@ to_python, get_db_prep_value, get_internal_type
 library, packages, modules
 apps.py file
 Add id that don't exists in ban to .json
+
+-------------------------------------------------
+
+celery
+scheduled tasks in django
+GCP pub-sub
+save method override through Base for all models -> publish on update/create
+adavntages/ disadvantage of microservices, when to user, communication modes
+update signal check
+clean and signal prev instance in-memory
+signals -> pub/sub

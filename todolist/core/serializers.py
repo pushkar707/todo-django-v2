@@ -36,7 +36,7 @@ class RegisterSerializer(AuthSerializer, serializers.Serializer):
     def validate(self, data):
         if CustomUser.objects.filter(Q(username=data['username']) | Q(email=data['email'])).exists():
             raise serializers.ValidationError(
-                "User with given username or email already exists.")
+                "User with given username or email already exists.", code=403)
         return data
 
     def create(self, validated_data):
