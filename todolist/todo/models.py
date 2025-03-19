@@ -3,6 +3,7 @@ from datetime import datetime
 from django.conf import settings
 from django.db.models import CheckConstraint, Q
 from rest_framework.exceptions import ValidationError
+from core.BaseModel import BaseModel
 
 
 class TodoStatus(models.IntegerChoices):
@@ -19,7 +20,7 @@ class BanWords(models.Model):
     word = models.CharField(null=False, blank=False)
 
 
-class Todo(models.Model):
+class Todo(BaseModel):
     heading = models.TextField(null=False, blank=False)
     description = models.TextField(null=True, blank=True)
     status = models.IntegerField(

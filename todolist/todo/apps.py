@@ -7,3 +7,4 @@ class TodoConfig(AppConfig):
 
     def ready(self):
         import todo.signals
+
