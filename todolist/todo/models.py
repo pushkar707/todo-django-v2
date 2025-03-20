@@ -35,6 +35,7 @@ class Todo(BaseModel):
     is_recurring = models.BooleanField(default=False)
     labels = models.ManyToManyField(Label)
     logs = models.ManyToManyField(BanWords, related_name='todos')
+    auto_created = models.BooleanField(default=False)
 
     def clean(self):
         '''
@@ -46,8 +47,9 @@ class Todo(BaseModel):
             raise ValidationError(
                 'Status must be created when creating the todo')
         if self.pk and self.status:
-            original = Todo.objects.get(pk=self.pk)
-            original_status = original.status
+            from todo.stores import TodoStore
+            original = TodoStore.getTodoById(self.id)
+            original_status = original.get('status')
 
             if self.status == original_status:
                 pass
@@ -63,7 +65,7 @@ class Todo(BaseModel):
         if self.completed_on and self.started_on and self.completed_on < self.started_on:
             raise ValidationError(
                 'Completed date connot be less than starting date')
-        
+
         if self.is_recurring and self.due_on:
             self.due_on = None
 
