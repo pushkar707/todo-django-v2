@@ -63,6 +63,9 @@ class Todo(BaseModel):
         if self.completed_on and self.started_on and self.completed_on < self.started_on:
             raise ValidationError(
                 'Completed date connot be less than starting date')
+        
+        if self.is_recurring and self.due_on:
+            self.due_on = None
 
         super().clean()
 

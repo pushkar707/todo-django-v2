@@ -41,6 +41,9 @@ class TodoSerializer(Base):
     '''
 
     def validate_due_on(self, due_on):
+        is_recurring = self.initial_data.get('is_recurring')
+        if is_recurring:
+            return None
         if due_on < timezone.now():
             raise serializers.ValidationError(
                 'Please select a future due_on time')

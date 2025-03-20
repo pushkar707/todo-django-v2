@@ -94,5 +94,12 @@ signals -> pub/sub X
 -----------------------------------------------------
 
 multithreading, multithreading v async
-how celery control workers
+how celery fetch workers state
 recurring feature
+coroutines
+
+
+---------------------------------------------------------
+Batch create recurring todos
+don't create logs when creating recurring todos
+todostore in models
